@@ -1,0 +1,25 @@
+const asuntoDAO = require("../../DAO/asuntoDAO");
+const utils = require("../utils/utils");
+const pdf = require("../utils/pdf");
+const csv = require("../utils/csv");
+const path = require('path');
+const fs = require('fs');
+const Archiver = require("archiver");
+
+async function registrarAsunto(req, res) {
+    try {
+        const postData = req.body;
+        if (Object.keys(postData).length !== 0) {
+            let data = await asuntoDAO.registrarAsunto(postData);
+            return res.status(200).json(data);
+        } else {
+            res.status(400).json(utils.postDataInvalido(postData));
+        }
+    } catch (ex) {
+        res.status(500).json(utils.errorGenerico(ex));
+    }
+}
+
+module.exports = {
+    registrarAsunto
+}
