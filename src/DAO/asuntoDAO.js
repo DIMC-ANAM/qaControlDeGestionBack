@@ -123,7 +123,7 @@ async function consultarDetalleAsunto(postData) {
         response = JSON.parse(JSON.stringify(result[0][0]));
         
         if (response.status == 200) {              
-            response.model = JSON.parse(JSON.stringify(result[1]));                   
+            response.model = JSON.parse(JSON.stringify(result[1][0]));                   
         }
         return response;
     } catch (ex) {
