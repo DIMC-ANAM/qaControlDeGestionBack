@@ -111,7 +111,7 @@ async function consultarAsuntosUR(postData) {
     }
 }
 
-async function consultarDetalleAsuntos(postData) {
+async function consultarDetalleAsunto(postData) {
        let response = {};
     try {
 
@@ -123,7 +123,7 @@ async function consultarDetalleAsuntos(postData) {
         response = JSON.parse(JSON.stringify(result[0][0]));
         
         if (response.status == 200) {              
-            response.model = JSON.parse(JSON.stringify(result[1]));                   
+            response.model = JSON.parse(JSON.stringify(result[1][0]));                   
         }
         return response;
     } catch (ex) {
@@ -131,12 +131,52 @@ async function consultarDetalleAsuntos(postData) {
     }
 }
 
+async function consultarExpedienteAsunto(postData) {
+       let response = {};
+    try {
 
+        let sql = `CALL SP_CONSULTAR_EXPEDIENTE_ASUNTO (
+            ?
+        )`;
+
+        let result = await db.query(sql, [postData.idAsunto ]);
+        response = JSON.parse(JSON.stringify(result[0][0]));
+        
+        if (response.status == 200) {              
+            response.model = JSON.parse(JSON.stringify(result[1][0]));                   
+        }
+        return response;
+    } catch (ex) {
+        throw ex;
+    }
+}
+
+async function consultarTurnados(postData) {
+       let response = {};
+    try {
+
+        let sql = `CALL SP_CONSULTAR_TURNADOS (
+            ?
+        )`;
+
+        let result = await db.query(sql, [postData.idAsunto ]);
+        response = JSON.parse(JSON.stringify(result[0][0]));
+        
+        if (response.status == 200) {              
+            response.model = JSON.parse(JSON.stringify(result[1][0]));                   
+        }
+        return response;
+    } catch (ex) {
+        throw ex;
+    }
+}
 
 module.exports = {
     registrarAsunto,
     consultarAsuntosUR,
-     consultarDetalleAsuntos
+     consultarDetalleAsunto,
+     consultarExpedienteAsunto,
+     consultarTurnados
 
 }
 async function almacenaListaArchivos(list,directorioAnexos,directoryBd,idUsuarioRegistra,idAsunto){

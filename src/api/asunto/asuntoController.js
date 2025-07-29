@@ -30,10 +30,30 @@ async function consultarAsuntosUR(req, res) {
     }
 }
 
-async function consultarDetalleAsuntos(req, res) {
+async function consultarDetalleAsunto(req, res) {
     try {
         const postData = req.body;
-            let data = await asuntoDAO.consultarDetalleAsuntos(postData);
+            let data = await asuntoDAO.consultarDetalleAsunto(postData);
+            return res.status(200).json(data);
+    } catch (ex) {
+        res.status(500).json(utils.errorGenerico(ex));
+    }
+}
+
+async function consultarExpedienteAsunto(req, res) {
+    try {
+        const postData = req.body;
+            let data = await asuntoDAO.consultarExpedienteAsunto(postData);
+            return res.status(200).json(data);
+    } catch (ex) {
+        res.status(500).json(utils.errorGenerico(ex));
+    }
+}
+
+async function consultarTurnados(req, res) {
+    try {
+        const postData = req.body;
+            let data = await asuntoDAO.consultarTurnados(postData);
             return res.status(200).json(data);
     } catch (ex) {
         res.status(500).json(utils.errorGenerico(ex));
@@ -46,10 +66,10 @@ async function consultarDetalleAsuntos(req, res) {
 
 
 
-
-
 module.exports = {
     registrarAsunto,
     consultarAsuntosUR,
-    consultarDetalleAsuntos
+    consultarDetalleAsunto,
+    consultarExpedienteAsunto,
+    consultarTurnados
 }
