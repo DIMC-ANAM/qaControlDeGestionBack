@@ -40,7 +40,25 @@ async function consultarDetalleAsunto(req, res) {
     }
 }
 
+async function consultarExpedienteAsunto(req, res) {
+    try {
+        const postData = req.body;
+            let data = await asuntoDAO.consultarExpedienteAsunto(postData);
+            return res.status(200).json(data);
+    } catch (ex) {
+        res.status(500).json(utils.errorGenerico(ex));
+    }
+}
 
+async function consultarTurnados(req, res) {
+    try {
+        const postData = req.body;
+            let data = await asuntoDAO.consultarTurnados(postData);
+            return res.status(200).json(data);
+    } catch (ex) {
+        res.status(500).json(utils.errorGenerico(ex));
+    }
+}
 
 
 
@@ -51,5 +69,7 @@ async function consultarDetalleAsunto(req, res) {
 module.exports = {
     registrarAsunto,
     consultarAsuntosUR,
-    consultarDetalleAsunto
+    consultarDetalleAsunto,
+    consultarExpedienteAsunto,
+    consultarTurnados
 }
