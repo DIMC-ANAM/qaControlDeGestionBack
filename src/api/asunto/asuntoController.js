@@ -30,7 +30,26 @@ async function consultarAsuntosUR(req, res) {
     }
 }
 
+async function consultarDetalleAsuntos(req, res) {
+    try {
+        const postData = req.body;
+            let data = await asuntoDAO.consultarDetalleAsuntos(postData);
+            return res.status(200).json(data);
+    } catch (ex) {
+        res.status(500).json(utils.errorGenerico(ex));
+    }
+}
+
+
+
+
+
+
+
+
+
 module.exports = {
     registrarAsunto,
-    consultarAsuntosUR
+    consultarAsuntosUR,
+    consultarDetalleAsuntos
 }
