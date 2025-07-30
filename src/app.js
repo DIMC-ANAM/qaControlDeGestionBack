@@ -74,7 +74,7 @@ app.use('/documentos', express.static(__dirname + '/documentos'));
  */
 app.use("/test", require("./api/test/test"));
 app.use("/token", require("./api/token/token"));
-app.use("/catalog", require("./api/catalog/catalog"));
+app.use("/catalogo", require("./api/catalog/catalog"));
 app.use("/user", require("./api/user/user"));
 app.use("/asunto", require("./api/asunto/asunto"));
 

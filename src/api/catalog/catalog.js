@@ -12,6 +12,9 @@ Response: http://localhost:80/catalog/getGender
     status:
     message:
     Model:{ta de genero}*/
-router.get("/getGender", token.validateToken, controller.getGender);
+router.get("/consultarTema", token.validateToken, controller.consultarTema);
+router.get("/consultarPrioridad", token.validateToken, controller.consultarPrioridad);
+router.get("/consultarTipoDocumento", token.validateToken, controller.consultarTipoDocumento);
+router.get("/consultarMedioRecepcion", token.validateToken, controller.consultarMedioRecepcion);
 
 module.exports = router;
