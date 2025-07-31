@@ -52,7 +52,7 @@ async function registrarAsunto(postData) {
 
             if (folio) {
                 const directorioAsunto = path.resolve(`./src/documentos/Asuntos/Asunto-${folio}`);
-                utils.checkDirectorySync(directorioAsunto);
+                utils.ensureDirectoryExistsSync(directorioAsunto);
                 const directoryBd = `documentos/Asuntos/Asunto-${folio}`;
 
                 // Procesar documento principal
@@ -85,7 +85,7 @@ async function registrarAsunto(postData) {
                 // Procesar anexos
                 if (Array.isArray(postData.anexos) && postData.anexos.length > 0) {
                     const directorioAnexos = path.resolve(`${directorioAsunto}/Anexos`);
-                    utils.checkDirectorySync(directorioAnexos);
+                    utils.ensureDirectoryExistsSync(directorioAnexos);
                     const directoryBdAnexos = `${directoryBd}/Anexos`;
 
                     const anexosResult = await almacenaListaArchivos(

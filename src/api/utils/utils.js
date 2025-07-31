@@ -258,7 +258,7 @@ async function sendDatosEquipoSESI(postData) {
 
 }
 
-async function writeFile(finalFile) {
+/* async function writeFile(finalFile) {
     return new Promise((resolve, rejec) => {
         fs.writeFile(finalFile.fileName, finalFile.base64, 'base64', function (err) {
             if (err) {
@@ -271,7 +271,7 @@ async function writeFile(finalFile) {
             }
         });
     })
-}
+} */
 
 function unlinkFile(ruta){
     try{
@@ -289,18 +289,15 @@ function unlinkFile(ruta){
 }
 
 async function writeFile(finalFile) {
-    return new Promise((resolve, rejec) => {
-        fs.writeFile(finalFile.fileName, finalFile.base64, 'base64', function (err) {
+    return new Promise((resolve, reject) => {
+        fs.writeFile(finalFile.fileName, finalFile.base64, 'base64', (err) => {
             if (err) {
-                let response3 = { status: 101, message: "Error processing file" + err };
-                return resolve(response3);
+                console.error(`Error escribiendo archivo ${finalFile.fileName}:`, err);
+                return reject(new Error(`Error processing file: ${err.message}`));
             }
-            else {
-                let response3 = { status: 200, message: "Se ha escrito de manera correcta el archivo: " + finalFile.fileName };
-                return resolve(response3);
-            }
+            resolve({ status: 200, message: `Se ha escrito correctamente el archivo: ${finalFile.fileName}` });
         });
-    })
+    });
 }
 
 function unlinkFile(ruta){
@@ -318,6 +315,20 @@ function unlinkFile(ruta){
     
 }
 
+
+function ensureDirectoryExistsSync(directory) {
+    try {
+        if (!fs.existsSync(directory)) {
+            fs.mkdirSync(directory, { recursive: true });
+            console.log(`Directorio creado: ${directory}`);
+        } else {
+            // Opcional: console.log(`Directorio ya existe: ${directory}`);
+        }
+    } catch (err) {
+        console.error(`Error creando directorio ${directory}:`, err);
+        throw err; // para que el error se propague y puedas detectarlo
+    }
+}
 
 module.exports = {
     postDataInvalido,
@@ -341,4 +352,5 @@ module.exports = {
     ,unlinkFile
     ,nullError
     ,unlinkFile
+    ,ensureDirectoryExistsSync
 }
