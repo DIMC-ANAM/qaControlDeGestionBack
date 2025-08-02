@@ -232,6 +232,46 @@ async function turnarAsunto(postData) {
         }
         return response;
     } catch (ex) {
+        console.error("Error en turnarAsunto:", ex); // ← Esto es importante para entender qué falla
+        return {
+            status: -1,
+            message: "Ocurrió un error interno, contactar a soporte técnico.",
+            error: {
+                level: "error",
+                timestamp: new Date().toISOString()
+            }
+        };
+    }
+}
+async function reemplazarDocumentoPrincipal(postData) {
+    let response = {};    
+    try {
+        const sql = `CALL SP_TURNAR_ASUNTO (
+            ?,?,?,?
+        )`;
+
+        for (const element of postData.listaTurnados) {
+            if(element.idTurnado){
+                continue;
+            }
+            const result = await db.query(sql, [
+                element.idAsunto ,
+                element.idUnidadResponsable ,
+                element.idInstruccion ,
+                element.idUsuarioAsigna 
+            ]);
+            
+            // Validar respuesta del procedimiento almacenado
+            if (result[0]?.[0]?.status == 200) {
+                response = { ...result[0][0] };            
+                
+            } else {
+                response = { status: 500, message: 'Error en la ejecución del procedimiento almacenado.' };
+                return;
+            }
+        }
+        return response;
+    } catch (ex) {
         console.error("Error en registrarAsunto:", ex); // ← Esto es importante para entender qué falla
         return {
             status: -1,
@@ -243,6 +283,8 @@ async function turnarAsunto(postData) {
         };
     }
 }
+
+
 
 module.exports = {
     registrarAsunto,
