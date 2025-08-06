@@ -74,11 +74,41 @@ async function consultarTurnados(req, res) {
         res.status(500).json(utils.errorGenerico(ex));
     }
 }
+async function reemplazarDocumento(req, res) {
+    try {
+        const postData = req.body;
+            let data = await asuntoDAO.reemplazarDocumento(postData);
+            return res.status(200).json(data);
+    } catch (ex) {
+        res.status(500).json(utils.errorGenerico(ex));
+    }
+}
+async function agregarAnexos(req, res) {
+    try {
+        const postData = req.body;
+            let data = await asuntoDAO.agregarAnexos(postData);
+            return res.status(200).json(data);
+    } catch (ex) {
+        res.status(500).json(utils.errorGenerico(ex));
+    }
+}
+async function eliminarDocumento(req, res) {
+    try {
+        const postData = req.body;
+            let data = await asuntoDAO.eliminarDocumento(postData);
+            return res.status(200).json(data);
+    } catch (ex) {
+        res.status(500).json(utils.errorGenerico(ex));
+    }
+}
 module.exports = {
     registrarAsunto,
     consultarAsuntosUR,
     consultarDetalleAsunto,
     consultarExpedienteAsunto,
     consultarTurnados,
-    turnarAsunto
+    turnarAsunto,
+    reemplazarDocumento,
+    agregarAnexos,
+    eliminarDocumento
 }

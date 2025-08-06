@@ -105,7 +105,7 @@ async function registrarAsunto(postData) {
 
         return response;
     } catch (ex) {
-        console.error("Error en registrarAsunto:", ex); // ← Esto es importante para entender qué falla
+        console.error("Error en registrarAsunto:", ex); 
         return {
             status: -1,
             message: "Ocurrió un error interno, contactar a soporte técnico.",
@@ -243,36 +243,150 @@ async function turnarAsunto(postData) {
         };
     }
 }
-async function reemplazarDocumentoPrincipal(postData) {
+async function reemplazarDocumento(postData) {
     let response = {};    
     try {
-        const sql = `CALL SP_TURNAR_ASUNTO (
-            ?,?,?,?
-        )`;
+        const sql = `CALL SP_REEMPLAZAR_DOCUMENTO_ASUNTO (?, ?, ?, ?, ?, ?, ?)`;
 
-        for (const element of postData.listaTurnados) {
-            if(element.idTurnado){
-                continue;
-            }
-            const result = await db.query(sql, [
-                element.idAsunto ,
-                element.idUnidadResponsable ,
-                element.idInstruccion ,
-                element.idUsuarioAsigna 
-            ]);
+        const directorioAsunto = path.resolve(`./src/documentos/Asuntos/Asunto-${postData.folio}`);
+        utils.ensureDirectoryExistsSync(directorioAsunto);
+        const directoryBd = `documentos/Asuntos/Asunto-${postData.folio}`;
+
+        // Validar que venga el documento
+        if (!postData.documento) {
+            console.warn("Falta documento principal.");
+            return {
+                status: 400,
+                message: "No se proporcionó el documento principal a reemplazar."
+            };
+        }
+
+        const finalFileDocPrincipal = {
+            fileName: `${directorioAsunto}/${postData.documento.fileName}`,
+            fileNameBd: `${directoryBd}/${postData.documento.fileName}`,
+            base64: Buffer.from(postData.documento.fileEncode64, 'base64')
+        };
+
+        // Guardar el archivo
+        const responseDP = await utils.writeFile(finalFileDocPrincipal);
+
+        if (responseDP.status !== 200) {
+            console.warn("No se pudo guardar el nuevo documento.");
+            return {
+                status: 500,
+                message: "Error al guardar el nuevo documento en el servidor."
+            };
+        }
+
+        // Llamar al procedimiento almacenado
+        const resultFileBD3 = await db.query(sql, [
+            postData.idAsunto,
+            postData.documento.tipoDocumento,
+            postData.documento.fileName,
+            finalFileDocPrincipal.fileNameBd,
+            postData.documento.size,
+            postData.idUsuarioRegistra,
+            postData.idDocumentoReemplazo,
             
-            // Validar respuesta del procedimiento almacenado
-            if (result[0]?.[0]?.status == 200) {
-                response = { ...result[0][0] };            
-                
-            } else {
-                response = { status: 500, message: 'Error en la ejecución del procedimiento almacenado.' };
-                return;
+
+        ]);
+
+        if (Array.isArray(resultFileBD3) && resultFileBD3[0]?.[0]) {
+            response = resultFileBD3[0][0];
+            if (response.status == 200 && postData.urlReemplazo) {                
+                if (postData.urlReemplazo !== finalFileDocPrincipal.fileNameBd) {                    
+                    await utils.unlinkFile(postData.urlReemplazo);
+                }
             }
+        } else {
+            console.warn("Respuesta inesperada del procedimiento almacenado.");
+            response = {
+                status: -1,
+                message: "No se pudo obtener una respuesta válida del SP."
+            };
+        }
+
+        return response;
+    } catch (ex) {
+        console.error("Error al Reemplazar documento:", ex); 
+        return {
+            status: -1,
+            message: "Ocurrió un error interno, contactar a soporte técnico.",
+            error: {
+                level: "error",
+                timestamp: new Date().toISOString()
+            }
+        };
+    }
+}
+async function eliminarDocumento(postData) {
+    let response = {};    
+    try {
+        const sql = `CALL SP_ELIMINAR_DOCUMENTO_ASUNTO (?)`;  
+
+
+        // Llamar al procedimiento almacenado
+        const resultDeleteBD = await db.query(sql, [            
+            postData.idDocumentAsunto
+        ]);
+        const resultInfo = resultDeleteBD?.[0]?.[0]; // Primer result set: status y message
+        const resultRuta = resultDeleteBD?.[1]?.[0]; // Segundo result set: model
+        
+        if (Array.isArray(resultDeleteBD) && resultDeleteBD[0]?.[0]) {
+            response.status = resultInfo.status;
+            response.message = resultInfo.message;
+            response.model = resultRuta?.model || null;
+
+            if (response.status == 200 && response.model && response.model !== "/") {                
+                try {
+                    await utils.unlinkFile(response.model);
+                } catch (unlinkErr) {
+                    console.warn("No se pudo eliminar el archivo:", unlinkErr);
+                }               
+            }
+        } else {
+            console.warn("Respuesta inesperada del procedimiento almacenado.");
+            response = {
+                status: -1,
+                message: "No se pudo obtener una respuesta válida del SP."
+            };
         }
         return response;
     } catch (ex) {
-        console.error("Error en registrarAsunto:", ex); // ← Esto es importante para entender qué falla
+        console.error("Error al eliminar el documento:", ex); 
+        return {
+            status: -1,
+            message: "Ocurrió un error interno, contactar a soporte técnico.",
+            error: {
+                level: "error",
+                timestamp: new Date().toISOString()
+            }
+        };
+    }
+}
+async function agregarAnexos(postData) {
+    let response = {};    
+    try {
+        const directorioAnexos = path.resolve(`./src/documentos/Asuntos/Asunto-${postData.folio}/Anexos`);
+        utils.ensureDirectoryExistsSync(directorioAnexos);
+        const directoryBdAnexos = `documentos/Asuntos/Asunto-${postData.folio}/Anexos`;
+
+        if (Array.isArray(postData.anexos) && postData.anexos.length > 0) {
+            const anexosResult = await almacenaListaArchivos(
+                postData.anexos,
+                directorioAnexos,
+                directoryBdAnexos,
+                postData.idUsuarioRegistra,
+                postData.idAsunto
+            );
+            response = anexosResult[0];
+        } else {
+            response= [];
+        }
+
+        return response;
+    } catch (ex) {
+        console.error("Error al agregar los documentos:", ex); 
         return {
             status: -1,
             message: "Ocurrió un error interno, contactar a soporte técnico.",
@@ -286,42 +400,63 @@ async function reemplazarDocumentoPrincipal(postData) {
 
 
 
+
+
 module.exports = {
     registrarAsunto,
     consultarAsuntosUR,
     consultarDetalleAsunto,
     consultarExpedienteAsunto,
     consultarTurnados,
-    turnarAsunto
+    turnarAsunto,
+    reemplazarDocumento,
+    agregarAnexos,
+    eliminarDocumento
 
 }
 async function almacenaListaArchivos(list, directorioAnexos, directoryBd, idUsuarioRegistra, idAsunto) {
-    let resultAnexosBD = {}
-    if (list != null || list.length != 0) {
+    const resultAnexosBD = [];
 
+    if (Array.isArray(list) && list.length > 0) {
+        const sqlDocumentos = `CALL SP_REGISTRAR_DOCUMENTO_ASUNTO(?, ?, ?, ?, ?, ?)`;
 
-        let sqlDocumentos = `CALL SP_REGISTRAR_DOCUMENTO_ASUNTO(
-            ?,?,?,
-            ?,?,?
-        );`;
         for (const element of list) {
-            var finalFile = {
-                fileName: directorioAnexos + `/${element.fileName}`,
-                fileNameBd: directoryBd + `/${element.fileName}`, /* quitar tipo de documento si consulta */
-                base64: new Buffer.from(element.fileEncode64, 'base64')
+            const finalFile = {
+                fileName: `${directorioAnexos}/${element.fileName}`,
+                fileNameBd: `${directoryBd}/${element.fileName}`,
+                base64: Buffer.from(element.fileEncode64, 'base64')
             };
-            let responseItem = await utils.writeFile(finalFile);
-            if (responseItem.status == 200) {
-                let resultAnexosBD = await db.query(sqlDocumentos, [
-                    idAsunto,
-                    element.tipoDocumento,
-                    element.fileName,
-                    finalFile.fileNameBd,
-                    element.size,
-                    idUsuarioRegistra
-                ]);
+
+            try {
+                const responseItem = await utils.writeFile(finalFile);
+                if (responseItem.status === 200) {
+                    const result = await db.query(sqlDocumentos, [
+                        idAsunto,
+                        element.tipoDocumento,
+                        element.fileName,
+                        finalFile.fileNameBd,
+                        element.size,
+                        idUsuarioRegistra
+                    ]);
+                    resultAnexosBD.push(result[0][0]);
+                } else {
+                    console.warn(`No se pudo escribir el archivo: ${element.fileName}`);
+                    resultAnexosBD.push({
+                        status: 500,
+                        file: element.fileName,
+                        message: "Error al escribir el archivo"
+                    });
+                }
+            } catch (err) {
+                console.error(`Error procesando archivo ${element.fileName}:`, err);
+                resultAnexosBD.push({
+                    status: 500,
+                    file: element.fileName,
+                    message: "Error interno al procesar el archivo"
+                });
             }
         }
     }
+
     return resultAnexosBD;
 }

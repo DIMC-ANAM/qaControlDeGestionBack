@@ -90,10 +90,10 @@ app.use("/turnado", require("./api/turnado/turnado"));
  * you can set default site string. 
 */
 app.get('*', function (req, res) {
-    res.redirect("https://google.com");
+    res.redirect("https://anam.gob.mx");
 });
 app.get('/', function (req, res) {
-    res.redirect("https://google.com")
+    res.redirect("https://anam.gob.mx")
 });
 
 
