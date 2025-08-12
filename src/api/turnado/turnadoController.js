@@ -18,7 +18,45 @@ async function consultarTurnados(req, res) {
     }
 }
 
+async function contestarTurnado(req, res) {
+    try {
+        const postData = req.body;
+            let data = await turnadoDAO.contestarTurnado(postData);
+            return res.status(200).json(data);
+    } catch (ex) {
+        res.status(500).json(utils.errorGenerico(ex));
+    }
+}
+async function consultarDetalleTurnado(req, res) {
+    try {
+        const postData = req.body;
+            let data = await turnadoDAO.consultarDetalleTurnado(postData);
+            return res.status(200).json(data);
+    } catch (ex) {
+        res.status(500).json(utils.errorGenerico(ex));
+    }
+}
+
+async function rechazarTurnado(req, res) {
+    try {
+        const postData = req.body;
+        if (!postData.idTurnado || !postData.idUsuarioModifica || !postData.motivoRechazo) {
+            return  res.status(400).json({
+                status: 400,
+                message: "Faltan datos obligatorios para rechazar el turnado."
+            });
+        }
+        let data = await turnadoDAO.rechazarTurnado(postData);
+        return res.status(200).json(data);
+    } catch (ex) {
+        res.status(500).json(utils.errorGenerico(ex));
+    }
+}
+
 
 module.exports = {
-    consultarTurnados
+    consultarTurnados,
+    contestarTurnado,
+    rechazarTurnado,
+    consultarDetalleTurnado
 }
