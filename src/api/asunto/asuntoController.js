@@ -110,6 +110,15 @@ async function concluirAsunto(req, res) {
         res.status(500).json(utils.errorGenerico(ex));
     }
 }
+async function editarAsunto(req, res) {
+    try {
+        const postData = req.body;
+            let data = await asuntoDAO.editarAsunto(postData);
+            return res.status(200).json(data);
+    } catch (ex) {
+        res.status(500).json(utils.errorGenerico(ex));
+    }
+}
 module.exports = {
     registrarAsunto,
     consultarAsuntosUR,
@@ -120,5 +129,6 @@ module.exports = {
     reemplazarDocumento,
     agregarAnexos,
     eliminarDocumento,
-    concluirAsunto
+    concluirAsunto,
+    editarAsunto
 }

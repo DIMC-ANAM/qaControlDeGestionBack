@@ -41,7 +41,9 @@ async function registrarAsunto(postData) {
         ]);
 
         // Validar respuesta del procedimiento almacenado
+        console.log(result);
         if (result[0]?.[0]?.status == 200) {
+            
             response = { ...result[0][0] };
             response.model = result[1]?.[0] || {};
             response.docP = null;
@@ -100,7 +102,7 @@ async function registrarAsunto(postData) {
                 }
             }
         } else {
-            response = { status: 500, message: 'Error en la ejecución del procedimiento almacenado.' };
+            response = { status: result[0]?.[0]?.status, message: result[0]?.[0]?.message };
         }
 
         return response;
@@ -445,6 +447,39 @@ async function concluirAsunto(postData) {
         throw ex;
     }
 }
+async function editarAsunto(postData) {
+    let response = {};
+    try {
+        
+        let sql = `CALL SP_EDITAR_ASUNTO (        
+        ?,?,?,?,?,
+        ?,?,?,?,?,
+        ?,?,?,?,?
+        )`;
+        const result = await db.query(sql, [
+            postData.idAsunto,
+            postData.idTipoDocumento,
+            postData.idTema,
+            postData.noOficio,
+            postData.idMedio,
+            postData.observaciones,
+            postData.descripcionAsunto,
+            postData.idUsuarioModifica,
+            postData.fechaCumplimiento,
+            postData.fechaDocumento,
+            postData.remitenteNombre,
+            postData.remitenteCargo,
+            postData.remitenteDependencia,
+            postData.dirigidoA,
+            postData.dirigidoACargo
+        ]);
+        response = JSON.parse(JSON.stringify(result[0][0]));
+        return response;
+
+    } catch (ex) {
+        throw ex;
+    }
+}
 
 
 
@@ -460,7 +495,8 @@ module.exports = {
     reemplazarDocumento,
     agregarAnexos,
     eliminarDocumento,
-    concluirAsunto
+    concluirAsunto,
+    editarAsunto
 
 }
 async function almacenaListaArchivos(list, directorioAnexos, directoryBd, idUsuarioRegistra, idAsunto) {

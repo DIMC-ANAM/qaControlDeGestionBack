@@ -13,6 +13,7 @@ router.post("/reemplazarDocumento", token.validateToken, controller.reemplazarDo
 router.post("/agregarAnexos", token.validateToken, controller.agregarAnexos);
 router.post("/eliminarDocumento", token.validateToken, controller.eliminarDocumento);
 router.post("/concluirAsunto", token.validateToken, controller.concluirAsunto);
+router.post("/editarAsunto", token.validateToken, controller.editarAsunto);
 
 module.exports = router;
 
