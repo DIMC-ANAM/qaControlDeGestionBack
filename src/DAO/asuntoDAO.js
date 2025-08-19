@@ -175,8 +175,11 @@ async function consultarExpedienteAsunto(postData) {
 
         if (response.status == 200) {
             response.model = {
-                documento: JSON.parse(JSON.stringify(result[1][0])),
+                documentos: JSON.parse(JSON.stringify(result[1])),  
+                
+                /* documento: JSON.parse(JSON.stringify(result[1][0])), */
                 anexos: JSON.parse(JSON.stringify(result[2])),
+                respuestas: JSON.parse(JSON.stringify(result[3])),
             }
         }
         return response;
