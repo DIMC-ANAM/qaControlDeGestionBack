@@ -85,6 +85,20 @@ async function consultarInstruccion(postData) {
         throw ex;
     }
 }
+async function consultarDependencia(postData) {
+    let response = {};
+    try {
+        let sql = `CALL SP_CONSULTAR_DEPENDENCIAS(?,?)`;
+        let result = await db.query(sql,[postData.idDependencia || 0, postData.opcion || 0 ]);
+        response = JSON.parse(JSON.stringify(result[0][0]));
+        if (response.status == 200) {
+            response.model = JSON.parse(JSON.stringify(result[1]));
+        }
+        return response;
+    } catch (ex) {
+        throw ex;
+    }
+}
 
 
 module.exports = {
@@ -93,5 +107,6 @@ module.exports = {
     consultarMedioRecepcion,
     consultarTipoDocumento,
     consultarUnidadAdministrativa,
-    consultarInstruccion
+    consultarInstruccion,
+    consultarDependencia
 }

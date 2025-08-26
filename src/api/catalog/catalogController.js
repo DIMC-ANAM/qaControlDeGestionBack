@@ -53,6 +53,14 @@ async function consultarInstruccion(req, res) {
         res.status(500).json(utils.errorGenerico(ex));
     }
 }
+async function consultarDependencia(req, res) {
+    try {
+        let data = await catalogDAO.consultarDependencia(req.body);
+        return res.status(200).json(data);
+    } catch (ex) {
+        res.status(500).json(utils.errorGenerico(ex));
+    }
+}
 
 module.exports = {
     consultarTema,
@@ -60,5 +68,6 @@ module.exports = {
     consultarMedioRecepcion,
     consultarTipoDocumento,
     consultarUnidadAdministrativa,
-    consultarInstruccion
+    consultarInstruccion,
+    consultarDependencia
 }

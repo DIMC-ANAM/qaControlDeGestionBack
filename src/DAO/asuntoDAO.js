@@ -212,7 +212,7 @@ async function turnarAsunto(postData) {
     let response = {};
     try {
         const sql = `CALL SP_TURNAR_ASUNTO (
-            ?,?,?,?
+            ?,?,?,?,?
         )`;
 
         for (const element of postData.listaTurnados) {
@@ -223,7 +223,8 @@ async function turnarAsunto(postData) {
                 element.idAsunto,
                 element.idUnidadResponsable,
                 element.idInstruccion,
-                element.idUsuarioAsigna
+                element.idUsuarioAsigna,
+                element.idTurnadoPadre || null
             ]);
 
             // Validar respuesta del procedimiento almacenado

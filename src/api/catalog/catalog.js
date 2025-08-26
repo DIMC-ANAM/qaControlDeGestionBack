@@ -18,5 +18,6 @@ router.get("/consultarTipoDocumento", token.validateToken, controller.consultarT
 router.get("/consultarMedioRecepcion", token.validateToken, controller.consultarMedioRecepcion);
 router.post("/consultarUnidadAdministrativa", token.validateToken, controller.consultarUnidadAdministrativa);
 router.post("/consultarInstruccion", token.validateToken, controller.consultarInstruccion);
+router.post("/consultarDependencia", token.validateToken, controller.consultarDependencia);
 
 module.exports = router;
