@@ -62,6 +62,61 @@ async function consultarDependencia(req, res) {
     }
 }
 
+async function registrarTema(req, res) {
+    try {
+        let data = await catalogDAO.registrarTema(req.body);
+        return res.status(200).json(data);
+    } catch (ex) {
+        res.status(500).json(utils.errorGenerico(ex));
+    }
+}
+
+async function registrarPrioridad(req, res){
+    try {
+        let data = await catalogDAO.registrarPrioridad(req.body);
+        return res.status(200).json(data);
+    }catch (ex){
+        res.status(500).json(utils.errorGenerico(ex));
+    }
+}
+
+async function insertarDeterminantes(req, res){
+    try {
+        let data = await catalogDAO.insertarDeterminantes(req.body);
+        return res.status(200).json(data);
+    }catch (ex){
+        res.status(500).json(utils.errorGenerico(ex));
+    }   
+}
+
+async function consultarDeterminantes(req, res){
+    try{
+        let data =  await catalogDAO.consultarDeterminantes(req.body);
+        return res.status(200).json(data);
+    }catch (ex){
+        res.status(500).json(utils.errorGenerico(ex));
+    }
+}
+
+async function actualizarDeterminantes(req, res){
+    try{
+        let data = await catalogDAO.actualizarDeterminantes(req.body);
+        return res.status(200).json(data);
+    }catch(ex){
+        res.status(500).json(utils.errorGenerico(ex));
+    }
+}
+
+async function desactivarDeterminantes(req, res) {
+    try{
+        let data = await catalogDAO.desactivarDeterminantes(req.body);
+        return res.status(200).json(data);
+    }catch (ex){
+        res.status(500).json(utils.errorGenerico(ex));
+    }
+}
+
+
 module.exports = {
     consultarTema,
     consultarPrioridad,
@@ -69,5 +124,12 @@ module.exports = {
     consultarTipoDocumento,
     consultarUnidadAdministrativa,
     consultarInstruccion,
-    consultarDependencia
+    consultarDependencia,
+    registrarTema,
+    registrarPrioridad,
+    insertarDeterminantes,
+    consultarDeterminantes,
+    actualizarDeterminantes,
+    desactivarDeterminantes,
 }
+

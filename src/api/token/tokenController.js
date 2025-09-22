@@ -25,7 +25,7 @@ async function generateToken(req, res) {
     }
 }
 
-function validateToken(request, response,next) {
+function validateToken(request, response, next) {
     return next(); /*enable for testing   */
     winston.info("Token: " + request.headers['authorization-ug']);
     var token = request.headers['authorization-ug']

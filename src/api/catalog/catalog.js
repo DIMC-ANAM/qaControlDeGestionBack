@@ -19,5 +19,11 @@ router.get("/consultarMedioRecepcion", token.validateToken, controller.consultar
 router.post("/consultarUnidadAdministrativa", token.validateToken, controller.consultarUnidadAdministrativa);
 router.post("/consultarInstruccion", token.validateToken, controller.consultarInstruccion);
 router.post("/consultarDependencia", token.validateToken, controller.consultarDependencia);
+router.post("/registrarTema", token.validateToken, controller.registrarTema);
+router.post("/registrarPrioridad", token.validateToken, controller.registrarPrioridad);
+router.post("/insertarDeterminantes", token.validateToken, controller.insertarDeterminantes);
+router.post("/consultarDeterminantes", token.validateToken, controller.consultarDeterminantes);
+router.post("/actualizarDeterminantes", token.validateToken, controller.actualizarDeterminantes);
+router.post("/desactivarDeterminantes", token.validateToken, controller.desactivarDeterminantes);
 
 module.exports = router;
