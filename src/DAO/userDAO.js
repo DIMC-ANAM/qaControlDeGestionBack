@@ -154,6 +154,56 @@ async function updatePassword(postData) {
         throw ex;
     }
 }
+
+async function updateUser(postData) {
+    let response = {};
+    try {
+        let sql = `CALL SP_ACTUALIZAR_USUARIO (?,?,?,?,?,?,?,?,?,?,?,?)`;
+        let result = await db.query(sql, [
+            postData.idUsuario,
+            postData.idUsuarioRol,
+            postData.idDeterminante,
+            postData.nombre,
+            postData.primerApellido,
+            postData.segundoApellido,
+            postData.telefono || null,
+            postData.correo,
+            postData.usuarioNombre,
+            postData.biografia || '',
+            postData.colorTheme,
+            postData.idUsuarioModifica
+        ]);
+        
+        response = JSON.parse(JSON.stringify(result[0][0]));
+        if (response.status == 200) {
+            response.model = JSON.parse(JSON.stringify(result[1][0]));
+        }
+        return response;
+    } catch (ex) {
+        throw ex;
+    }
+}
+
+async function activateUser(postData) {
+    let response = {};
+    try {
+        let sql = `CALL SP_ACTIVAR_DESACTIVAR_USUARIO (?,?)`;
+        let result = await db.query(sql, [
+            postData.idUsuario,
+            postData.idUsuarioModifica
+        ]);
+        
+        response = JSON.parse(JSON.stringify(result[0][0]));
+        if (response.status == 200) {
+            response.model = JSON.parse(JSON.stringify(result[1][0]));
+        }
+        return response;
+    } catch (ex) {
+        throw ex;
+    }
+}
+
+
 module.exports = {
     createUser,
     confirmEmail,
@@ -161,6 +211,8 @@ module.exports = {
     getUserByHash,
     resetPasswordRequest,
     updatePassword,
+    updateUser,
+    activateUser,
     getUsuariosAdmin
 
 }

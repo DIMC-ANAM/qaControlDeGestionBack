@@ -151,6 +151,46 @@ async function updatePassword(req, res) {
         res.status(500).json(utils.genericError(ex));
     }
 }
+
+/**
+ * Actualiza un usuario existente
+ * 
+ * @param {*} req 
+ * @param {*} res 
+ */
+async function updateUser(req, res) {
+    try {
+        const postData = req.body;
+        if (Object.keys(postData).length !== 0) {   
+            let data = await userDAO.updateUser(postData);                                    
+            return res.status(200).json(data);
+        } else {
+            res.status(400).json(utils.invalidPostData(postData));
+        }
+    } catch (ex) {
+        res.status(500).json(utils.errorGenerico(ex));
+    }
+}
+
+/**
+ * activa un usuario existente
+ * 
+ * @param {*} req 
+ * @param {*} res 
+ */
+async function activateUser(req, res) {
+    try {
+        const postData = req.body;
+        if (Object.keys(postData).length !== 0) {   
+            let data = await userDAO.activateUser(postData);                                    
+            return res.status(200).json(data);
+        } else {
+            res.status(400).json(utils.invalidPostData(postData));
+        }
+    } catch (ex) {
+        res.status(500).json(utils.errorGenerico(ex));
+    }
+}
 module.exports = {
     createUser,
     confirmEmail,
@@ -158,5 +198,7 @@ module.exports = {
     getUserByHash,
     resetPasswordRequest,
     updatePassword,
+    updateUser,
+    activateUser,
     getUsuariosAdmin
 }

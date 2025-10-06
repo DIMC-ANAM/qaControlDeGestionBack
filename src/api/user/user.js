@@ -64,6 +64,25 @@ Model:{}
 */
 router.post("/actualizarContrasena", token.validateToken, controller.updatePassword);
 
+/*Servicio para actualizar usuario 
+Request: http://localhost:9051/usuario/actualizarUsuario
+Response:
+    status:
+    message:
+Model:{}
+*/
+router.post("/actualizarUsuario", token.validateToken, controller.updateUser);
+
+/*Servicio para activar usuario 
+Request: http://localhost:9051/usuario/activarUsuario
+Response:
+    status:
+    message:
+Model:{}
+*/
+
+router.post("/activarUsuario", token.validateToken, controller.activateUser)
+
 
 /**
  * ----------------------------------------
