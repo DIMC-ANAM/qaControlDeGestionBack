@@ -4,9 +4,10 @@ const utils  = require("../api/utils/utils");
 async function logIn(postData) {
     let response = {};
     try {
-        let cryptPassw = await utils.encryptPassword(postData.password);
-        let sql = `CALL api_SP_LOG_IN (?,?)`;
-        let result = await db.query(sql, [postData.user, cryptPassw]);
+        let cryptPassw = await utils.encriptarContrasena(postData.password);
+        let sql = `CALL SP_LOGIN (?,?,?)`;
+        let result = await db.query(sql, [postData.email, cryptPassw, postData.ip ]);
+        console.log(cryptPassw);
         
         response = JSON.parse(JSON.stringify(result[0][0]));
         
@@ -25,25 +26,58 @@ async function createUser(postData) {
 
     try {
 
-        let sql = `CALL erde_SP_CREATE_USER (
-            ?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,? 
+        let sql = `CALL SP_REGISTRAR_USUARIO (
+            ?,?,?,?,?, 
+            ?,?,?,?,?, 
+            ?,?
         )`;
-        let encryptPassword = await utils.encryptPassword(postData.contrasena);        
+        let encryptPassword = await utils.encriptarContrasena(postData.contrasena);        
         let result = await db.query(sql, [
-            postData.nombre,
-            postData.primerApellido,
-            postData.segundoApellido || '',
-            /* postData.fechaNacimiento,
-            postData.idGenero,
-            postData.idEstadoNacimiento,
-            postData.idEntidadFederativa,
-            postData.idEscuelaProcedencia, */
-            postData.correoElectronico,
-            encryptPassword
+            postData.idUsuarioRol, 
+            postData.idDependencia, 
+            postData.nombre, 
+            postData.primerApellido, 
+            postData.segundoApellido, 
+            postData.telefono || null, 
+            postData.correo, 
+            postData.contrasena, 
+            encryptPassword,
+            postData.usuarioNombre, 
+            postData.biografia || '', 
+            postData.idUsuarioModifica, 
         ]);
         response = JSON.parse(JSON.stringify(result[0][0]));
         if (response.status == 200) {
             response.model = JSON.parse(JSON.stringify(result[1][0]));
+        }
+        return response;
+    } catch (ex) {
+        throw ex;
+    }
+}
+async function getUsuariosAdmin(postData) {
+    let response = {};
+
+    try {
+
+        let sql = `CALL SP_OBTENER_USUARIO (
+            ?
+        )`;
+        let result = await db.query(sql, [
+            postData.idUsuario || 0
+        ]);
+        response = JSON.parse(JSON.stringify(result[0][0]));
+        if (response.status == 200) {
+            if (postData.idUsuario !=0) {
+               
+                response.model = {
+                    userData: result[2][0],
+                    stats: result[3],
+                    mods: result[4]
+                };
+            } else {
+                response.model = JSON.parse(JSON.stringify(result[1]));
+            }
         }
         return response;
     } catch (ex) {
@@ -110,7 +144,7 @@ async function updatePassword(postData) {
     try {
 
         let sql = `CALL erde_SP_UPDATE_PASSWORD (?,?,?)`;
-        let encryptPassword = await utils.encryptPassword(postData.password);
+        let encryptPassword = await utils.encriptarContrasena(postData.password);
         let result = await db.query(sql, [postData.userId,postData.hashCode,encryptPassword]);
         
         response = JSON.parse(JSON.stringify(result[0][0]));
@@ -126,5 +160,7 @@ module.exports = {
     logIn,
     getUserByHash,
     resetPasswordRequest,
-    updatePassword
+    updatePassword,
+    getUsuariosAdmin
+
 }

@@ -11,7 +11,12 @@ const config = require("../../config/config");
 async function logIn(req, res) {
     try {
         const postData = req.body;
+        const clientIp = req.headers['x-forwarded-for'] || req.socket.remoteAddress;
+
         if (Object.keys(postData).length !== 0) {
+            postData.ip = clientIp;
+            console.log(postData);
+            
             let data = await userDAO.logIn(postData);
             if (data.status == 200) {
                 data.model.tokenWs = token.generateTokenByUser(data.model);
@@ -21,7 +26,7 @@ async function logIn(req, res) {
             res.status(400).json(utils.invalidPostData(postData));
         }
     } catch (ex) {
-        res.status(500).json(utils.genericError(ex));
+        res.status(500).json(utils.errorGenerico(ex));
     }
 }
 
@@ -36,9 +41,22 @@ async function createUser(req, res) {
         if (Object.keys(postData).length !== 0) {
 
             let data = await userDAO.createUser(postData);                
-            if (data.status == 200) {
+            /* if (data.status == 200) {
                 email.sendNotification(1,data.model);
-            }         
+            }    */      
+            return res.status(200).json(data);            
+        } else {
+            res.status(400).json(utils.invalidPostData(postData));
+        }
+    } catch (ex) {
+        res.status(500).json(utils.errorGenerico(ex));
+    }
+}
+async function getUsuariosAdmin(req, res) {
+    try {
+        const postData = req.body;
+        if (Object.keys(postData).length !== 0) {
+            let data = await userDAO.getUsuariosAdmin(postData);                                 
             return res.status(200).json(data);            
         } else {
             res.status(400).json(utils.invalidPostData(postData));
@@ -139,5 +157,6 @@ module.exports = {
     logIn,
     getUserByHash,
     resetPasswordRequest,
-    updatePassword
+    updatePassword,
+    getUsuariosAdmin
 }

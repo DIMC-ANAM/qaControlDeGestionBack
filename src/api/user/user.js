@@ -11,7 +11,9 @@ const token = require("../token/tokenController");
 *   message: 
 *   postData: {correo, contrasena , ...}
 */
+router.post("/logIn", token.validateToken, controller.logIn);
 router.post("/registrarUsuario", token.validateToken, controller.createUser);
+router.post("/getUsuariosAdmin", token.validateToken, controller.getUsuariosAdmin);
 
 
 /*

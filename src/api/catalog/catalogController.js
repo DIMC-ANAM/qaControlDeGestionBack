@@ -61,6 +61,14 @@ async function consultarDependencia(req, res) {
         res.status(500).json(utils.errorGenerico(ex));
     }
 }
+async function consultarUsuarioRol(req, res) {
+    try {
+        let data = await catalogDAO.consultarUsuarioRol(req.body);
+        return res.status(200).json(data);
+    } catch (ex) {
+        res.status(500).json(utils.errorGenerico(ex));
+    }
+}
 
 async function registrarTema(req, res) {
     try {
@@ -125,6 +133,7 @@ module.exports = {
     consultarUnidadAdministrativa,
     consultarInstruccion,
     consultarDependencia,
+    consultarUsuarioRol,
     registrarTema,
     registrarPrioridad,
     insertarDeterminantes,

@@ -110,6 +110,20 @@ async function consultarDependencia(postData) {
     throw ex;
   }
 }
+async function consultarUsuarioRol(postData) {
+    let response = {};
+    try {
+        let sql = `CALL SP_CONSULTAR_ROL_USUARIO(?)`;
+        let result = await db.query(sql,[postData.idUsuarioRol || 0]);
+        response = JSON.parse(JSON.stringify(result[0][0]));
+        if (response.status == 200) {
+            response.model = JSON.parse(JSON.stringify(result[1]));
+        }
+        return response;
+    } catch (ex) {
+        throw ex;
+    }
+}
 
     // registrar tema 
 async function registrarTema(postData) {
@@ -267,6 +281,7 @@ module.exports = {
   consultarUnidadAdministrativa,
   consultarInstruccion,
   consultarDependencia,
+    consultarUsuarioRol,
   registrarTema, 
   registrarPrioridad,
   insertarDeterminantes,
