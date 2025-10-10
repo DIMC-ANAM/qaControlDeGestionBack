@@ -53,8 +53,28 @@ async function rechazarTurnado(postData) {
 
         let result = await db.query(sql, [
             postData.idTurnado,
-			postData.idUsuarioModifica,
-			postData.motivoRechazo
+            postData.idUsuarioModifica,
+            postData.motivoRechazo
+        ]);
+        response = JSON.parse(JSON.stringify(result[0][0]));
+
+        return response;
+    } catch (ex) {
+        throw ex;
+    }
+}
+
+async function verTurnado(postData) {
+    let response = {};
+    try {
+
+        let sql = `CALL SP_VER_TURNADO (
+            ?,?
+        )`;
+
+        let result = await db.query(sql, [
+            postData.idTurnado,
+            postData.idUsuarioModifica,
         ]);
         response = JSON.parse(JSON.stringify(result[0][0]));
 
@@ -67,55 +87,55 @@ async function contestarTurnado(postData) {
     let response = {};
     try {
         const directorioTurnados = path.resolve(`./src/documentos/Asuntos/Asunto-${postData.folio}/Turnado-${postData.idTurnado}`);
-utils.ensureDirectoryExistsSync(directorioTurnados);
-const directoryBdTurnados = `documentos/Asuntos/Asunto-${postData.folio}/Turnado-${postData.idTurnado}`;
+        utils.ensureDirectoryExistsSync(directorioTurnados);
+        const directoryBdTurnados = `documentos/Asuntos/Asunto-${postData.folio}/Turnado-${postData.idTurnado}`;
 
-// Verificar si el usuario es atendedor
-if (postData.atendedor) {
-    // Si es atendedor, omitir el registro de documentos y solo ejecutar contestarTurnado
-    let sql = `CALL SP_CONTESTAR_TURNADO (?, ?, ?)`;
-    const result = await db.query(sql, [
-        postData.idTurnado,
-        postData.idUsuario,
-        postData.respuesta,
-    ]);
-    
-    response = JSON.parse(JSON.stringify(result[0][0]));
-} else {
-    // Si no es atendedor, proceder con el registro de documentos
-    if (Array.isArray(postData.documentos) && postData.documentos.length > 0) {
-        const documentosResult = await almacenaListaArchivos(
-            postData.documentos,
-            directorioTurnados,
-            directoryBdTurnados,
-            postData.idUsuario,
-            postData.idAsunto
-        );
+        // Verificar si el usuario es atendedor
+        if (postData.atendedor) {
+            // Si es atendedor, omitir el registro de documentos y solo ejecutar contestarTurnado
+            let sql = `CALL SP_CONTESTAR_TURNADO (?, ?, ?)`;
+            const result = await db.query(sql, [
+                postData.idTurnado,
+                postData.idUsuario,
+                postData.respuesta,
+            ]);
 
-        // Si hubo error en el guardado, lo lanzamos y no se ejecuta el SP
-        const resultadoDocumento = documentosResult[0];
-        if (resultadoDocumento.error) {
-            throw new Error(`Error al guardar documentos: ${resultadoDocumento.mensaje || 'Sin mensaje detallado'}`);
+            response = JSON.parse(JSON.stringify(result[0][0]));
+        } else {
+            // Si no es atendedor, proceder con el registro de documentos
+            if (Array.isArray(postData.documentos) && postData.documentos.length > 0) {
+                const documentosResult = await almacenaListaArchivos(
+                    postData.documentos,
+                    directorioTurnados,
+                    directoryBdTurnados,
+                    postData.idUsuario,
+                    postData.idTurnado
+                );
+
+                // Si hubo error en el guardado, lo lanzamos y no se ejecuta el SP
+                const resultadoDocumento = documentosResult[0];
+                if (resultadoDocumento.error) {
+                    throw new Error(`Error al guardar documentos: ${resultadoDocumento.mensaje || 'Sin mensaje detallado'}`);
+                }
+
+                response = resultadoDocumento;
+
+                // 2. Ejecutar SP solo si los documentos fueron exitosamente guardados (o si no había documentos)
+                let sql = `CALL SP_CONTESTAR_TURNADO (?, ?, ?)`;
+                const result = await db.query(sql, [
+                    postData.idTurnado,
+                    postData.idUsuario,
+                    postData.respuesta,
+                ]);
+
+                response = JSON.parse(JSON.stringify(result[0][0]));
+            } else {
+                response = {
+                    status: 404,
+                    message: "Faltan documentos para responder el turnado."
+                };
+            }
         }
-
-        response = resultadoDocumento;
-        
-        // 2. Ejecutar SP solo si los documentos fueron exitosamente guardados (o si no había documentos)
-        let sql = `CALL SP_CONTESTAR_TURNADO (?, ?, ?)`;
-        const result = await db.query(sql, [
-            postData.idTurnado,
-            postData.idUsuario,
-            postData.respuesta,
-        ]);
-        
-        response = JSON.parse(JSON.stringify(result[0][0]));
-    } else {
-        response = {
-            status: 404,
-            message: "Faltan documentos para responder el turnado."
-        };
-    }
-}
 
 
         return response;
@@ -127,10 +147,11 @@ if (postData.atendedor) {
 
 
 module.exports = {
-     consultarTurnadosUR,
-     rechazarTurnado,
-     contestarTurnado,
-     consultarDetalleTurnado
+    consultarTurnadosUR,
+    rechazarTurnado,
+    contestarTurnado,
+    consultarDetalleTurnado,
+    verTurnado
 }
 
 async function almacenaListaArchivos(list, directorioTurnados, directoryBd, idUsuarioRegistra, idTurnado) {

@@ -14,6 +14,7 @@ router.post("/agregarAnexos", token.validateToken, controller.agregarAnexos);
 router.post("/eliminarDocumento", token.validateToken, controller.eliminarDocumento);
 router.post("/concluirAsunto", token.validateToken, controller.concluirAsunto);
 router.post("/editarAsunto", token.validateToken, controller.editarAsunto);
+router.post("/consultarHistorial", token.validateToken, controller.consultarHistorial);
 
 module.exports = router;
 

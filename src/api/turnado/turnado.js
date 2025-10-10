@@ -8,6 +8,7 @@ router.post("/consultarTurnados", token.validateToken, controller.consultarTurna
 router.post("/contestarTurnado", token.validateToken, controller.contestarTurnado);
 router.post("/rechazarTurnado", token.validateToken, controller.rechazarTurnado);
 router.post("/consultarDetalleTurnado", token.validateToken, controller.consultarDetalleTurnado);
+router.post("/verTurnado", token.validateToken, controller.verTurnado);
 
 
 module.exports = router;

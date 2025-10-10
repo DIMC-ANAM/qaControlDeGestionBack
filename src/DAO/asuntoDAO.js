@@ -207,6 +207,31 @@ async function consultarTurnados(postData) {
         throw ex;
     }
 }
+async function consultarHistorial(postData) {
+    let response = {};
+    try {
+
+        let sql = `CALL SP_OBTENER_HISTORIAL_COMPLETO_TURNADOS (
+            ?
+        )`;
+
+        let result = await db.query(sql, [postData.idAsunto]);
+        response = JSON.parse(JSON.stringify(result[0][0]));
+
+        if (response.status == 200) {
+                response.model = {
+                    asuntoRegistrado: JSON.parse(JSON.stringify(result[1][0])),
+                    turnados: result[2].map(turnado => ({
+                        ...turnado,
+                        fases: [JSON.parse(turnado.fases) ]// <-- Aquí haces la conversión
+                    }))
+                };
+        }
+        return response;
+    } catch (ex) {
+        throw ex;
+    }
+}
 
 async function turnarAsunto(postData) {
     let response = {};
@@ -525,7 +550,8 @@ module.exports = {
     agregarAnexos,
     eliminarDocumento,
     concluirAsunto,
-    editarAsunto
+    editarAsunto,
+    consultarHistorial
 
 }
 async function almacenaListaArchivos(list, directorioAnexos, directoryBd, idUsuarioRegistra, idAsunto) {

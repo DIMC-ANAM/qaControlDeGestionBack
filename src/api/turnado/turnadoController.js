@@ -52,11 +52,27 @@ async function rechazarTurnado(req, res) {
         res.status(500).json(utils.errorGenerico(ex));
     }
 }
+async function verTurnado(req, res) {
+    try {
+        const postData = req.body;
+        if (!postData.idTurnado || !postData.idUsuarioModifica) {
+            return  res.status(400).json({
+                status: 400,
+                message: "Faltan datos obligatorios para rechazar el turnado."
+            });
+        }
+        let data = await turnadoDAO.verTurnado(postData);
+        return res.status(200).json(data);
+    } catch (ex) {
+        res.status(500).json(utils.errorGenerico(ex));
+    }
+}
 
 
 module.exports = {
     consultarTurnados,
     contestarTurnado,
     rechazarTurnado,
-    consultarDetalleTurnado
+    consultarDetalleTurnado,
+    verTurnado
 }
