@@ -26,5 +26,6 @@ router.post("/insertarDeterminantes", token.validateToken, controller.insertarDe
 router.post("/consultarDeterminantes", token.validateToken, controller.consultarDeterminantes);
 router.post("/actualizarDeterminantes", token.validateToken, controller.actualizarDeterminantes);
 router.post("/desactivarDeterminantes", token.validateToken, controller.desactivarDeterminantes);
+router.post("/consultarCantidadesStatus", token.validateToken, controller.consultarCantidadesStatus);
 
 module.exports = router;

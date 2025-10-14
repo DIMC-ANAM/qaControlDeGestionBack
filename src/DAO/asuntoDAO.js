@@ -223,7 +223,7 @@ async function consultarHistorial(postData) {
                     asuntoRegistrado: JSON.parse(JSON.stringify(result[1][0])),
                     turnados: result[2].map(turnado => ({
                         ...turnado,
-                        fases: [JSON.parse(turnado.fases) ]// <-- Aquí haces la conversión
+                        fases: JSON.parse(turnado.fases)// <-- Aquí haces la conversión
                     }))
                 };
         }
@@ -433,7 +433,7 @@ async function concluirAsunto(postData) {
     let response = {};
     const archivosGuardados = [];
     try {
-        // 1. Validar que existan documentos
+        // 1. Validar que existan documentos		
         if (!Array.isArray(postData.documentos) || postData.documentos.length === 0) {
             return {
                 status: 404,
@@ -450,7 +450,7 @@ async function concluirAsunto(postData) {
             postData.documentos,
             directorioConclusion,
             directoryBdConclusion,
-            postData.idUsuario,
+            postData.idUsuarioRegistra,
             postData.idAsunto
         );
 
@@ -466,7 +466,7 @@ async function concluirAsunto(postData) {
         const sql = `CALL SP_CONCLUIR_ASUNTO (?, ?)`;
         const result = await db.query(sql, [
             postData.idAsunto,
-            postData.idUsuario
+            postData.idUsuarioRegistra
         ]);
         const spResponse = JSON.parse(JSON.stringify(result[0][0]));
 

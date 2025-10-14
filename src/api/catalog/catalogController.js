@@ -124,6 +124,15 @@ async function desactivarDeterminantes(req, res) {
     }
 }
 
+async function consultarCantidadesStatus(req, res) {
+    try{
+        let data = await catalogDAO.consultarCantidadesStatus(req.body);
+        return res.status(200).json(data);
+    }catch (ex){
+        res.status(500).json(utils.errorGenerico(ex));
+    }
+}
+
 
 module.exports = {
     consultarTema,
@@ -140,5 +149,6 @@ module.exports = {
     consultarDeterminantes,
     actualizarDeterminantes,
     desactivarDeterminantes,
+	consultarCantidadesStatus
 }
 

@@ -141,6 +141,24 @@ async function registrarTema(postData) {
     throw ex;
   }
 }
+async function consultarCantidadesStatus(postData) {
+  let response = {};
+  try {
+    let sql = `CALL SP_CONSULTAR_CANTIDADES_STATUS(?,?)`;
+    let result = await db.query(sql, [
+		postData.opcion, 
+		postData.idUnidadResponsable || null
+	]);
+
+    response = JSON.parse(JSON.stringify(result[0][0]));
+    if (response.status === 200) {
+      response.model = JSON.parse(JSON.stringify(result[1])); 
+    }
+    return response;
+  } catch (ex) {
+    throw ex;
+  }
+}
     // Registrar proridad
 async function registrarPrioridad(postData){
     let response = {};
@@ -289,4 +307,5 @@ module.exports = {
   actualizarDeterminantes,
   //
   desactivarDeterminantes,
+  consultarCantidadesStatus
 };
