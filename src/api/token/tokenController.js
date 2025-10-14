@@ -26,8 +26,6 @@ async function generateToken(req, res) {
 }
 
 function validateToken(request, response, next) {
-    return next(); /*enable for testing   */
-    winston.info("Token: " + request.headers['authorization-ug']);
     var token = request.headers['authorization-ug']
     var result = { estatus: -1, mensaje: " " }
     if (!token) {
@@ -41,11 +39,16 @@ function validateToken(request, response, next) {
     token = token.replace('Bearer-UG ', '')
     jwt.verify(token, jwtClave, function (err, user) {
         if (err) {
-            result.mensaje = "Invalid token";
-            return response.status(401).json(result);
+            return response.status(401).json({ 
+                estatus: -1, 
+                mensaje: "Invalid token" 
+            });
         } else {
-            result.mensaje = "Correct token"
-            result.estatus = 200;
+
+            request.userToken = user; // Datos completos
+            
+            // LOG automatico en cada petición
+            winston.info(`- idUsuario: ${user.idUsuario} - ${user.nombreCompleto} - idToken: ${token.substring(0, 8)} - Acción: ${request.url}`);
         }
     });
     return next();
@@ -62,9 +65,24 @@ function generateTokenByUser(user) {
         throw err;
     }
 }
+        //desencriptar el token
+function decryptToken(authHeader) {
+    try {
+        if (!authHeader || !authHeader.includes("Bearer-UG")) {
+            return null;
+        }
+        var token = authHeader.replace('Bearer-UG ', '')
+        var decoded = jwt.verify(token, jwtClave);
+        return decoded;
+    }
+    catch (err) {
+        return null;
+    }
+}
 
 module.exports = {
     generateToken,
     validateToken,
-    generateTokenByUser
+    generateTokenByUser,
+    decryptToken
 }

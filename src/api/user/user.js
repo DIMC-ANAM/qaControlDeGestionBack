@@ -11,7 +11,7 @@ const token = require("../token/tokenController");
 *   message: 
 *   postData: {correo, contrasena , ...}
 */
-router.post("/logIn", token.validateToken, controller.logIn);
+// router.post("/logIn", token.validateToken, controller.logIn);
 router.post("/registrarUsuario", token.validateToken, controller.createUser);
 router.post("/getUsuariosAdmin", token.validateToken, controller.getUsuariosAdmin);
 
@@ -24,7 +24,7 @@ router.post("/getUsuariosAdmin", token.validateToken, controller.getUsuariosAdmi
 *   message: 
 *   postData: {correo, contrasena , ...}
 */
-router.post("/logIn", token.validateToken, controller.logIn);
+router.post("/logIn", controller.logIn); //no se necesita validar el token para iniciar sesion, si no no deja
 
 /*
 *   Servicio para registro de usuarios.
