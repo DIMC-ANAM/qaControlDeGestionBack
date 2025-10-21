@@ -21,10 +21,14 @@ router.post("/consultarInstruccion", token.validateToken, controller.consultarIn
 router.post("/consultarDependencia", token.validateToken, controller.consultarDependencia);
 router.post("/consultarUsuarioRol", token.validateToken, controller.consultarUsuarioRol);
 router.post("/registrarTema", token.validateToken, controller.registrarTema);
-router.post("/registrarPrioridad", token.validateToken, controller.registrarPrioridad);
 router.post("/insertarDeterminantes", token.validateToken, controller.insertarDeterminantes);
 router.post("/consultarDeterminantes", token.validateToken, controller.consultarDeterminantes);
 router.post("/actualizarDeterminantes", token.validateToken, controller.actualizarDeterminantes);
 router.post("/desactivarDeterminantes", token.validateToken, controller.desactivarDeterminantes);
+router.post("/actualizarTema", token.validateToken, controller.actualizarTema);
+router.post("/desactivarTema", token.validateToken, controller.desactivarTema);
+router.post("/registrarTipoDocumento", token.validateToken, controller.registrarTipoDocumento);
+router.post("/actualizarTipoDocumento", token.validateToken, controller.actualizarTipoDocumento);
+router.post("/activarTipoDocumento", token.validateToken, controller.activarDesactivarTipoDocumento);
 
 module.exports = router;

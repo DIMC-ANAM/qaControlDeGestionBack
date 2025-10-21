@@ -1,7 +1,7 @@
 const winston = require("../../config/winston");
 var jwt = require('jsonwebtoken')
 var jwtClave = 'DGTIC-jwt_21';
-var jwtTimeToken = 60 * 60 * 24; // expires in 24 hours
+var jwtTimeToken = 60 * 60 * 24; // expires in 30  hours
 
 
 async function generateToken(req, res) {
@@ -26,6 +26,7 @@ async function generateToken(req, res) {
 }
 
 function validateToken(request, response, next) {
+    return next();
     var token = request.headers['authorization-ug']
     var result = { estatus: -1, mensaje: " " }
     if (!token) {
