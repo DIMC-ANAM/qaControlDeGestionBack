@@ -129,12 +129,12 @@ async function consultarUsuarioRol(postData) {
 async function registrarTema(postData) {
   let response = {};
   try {
-    let sql = `CALL SP_REGISTRAR_TEMA(?)`;
-    let result = await db.query(sql, [postData?.tema || null]);
+    let sql = 'CALL SP_REGISTRAR_TEMA(?)';
+    let result = await db.query(sql, [postData.tema || null]);
 
     response = JSON.parse(JSON.stringify(result[0][0]));
-    if (response.status === 200) {
-      response.model = JSON.parse(JSON.stringify(result[1][0])); 
+    if (response.status == 200) {
+      response.model = JSON.parse(JSON.stringify(result[1][0]));
     }
     return response;
   } catch (ex) {
@@ -160,19 +160,19 @@ async function consultarCantidadesStatus(postData) {
   }
 }
     // Registrar proridad
-async function registrarPrioridad(postData){
+async function registrarTipoDocumento(postData) {
     let response = {};
-    try{
-        let sql = 'CALL SP_REGISTRAR_PRIORIDAD(?)';
-        let result = await db.query(sql, [postData?.prioridad || null]);
+    try {
+        let sql = 'CALL SP_REGISTRAR_TIPO_DOCUMENTO(?)';
+        let result = await db.query(sql, [postData.tipoDocumento || null]);
 
         response = JSON.parse(JSON.stringify(result[0][0]));
-        
-        if(response.status === 200){
-            response.model = JSON.parse(JSON.stringify(result[1][0]))
+
+        if (response.status === 200) {
+            response.model = JSON.parse(JSON.stringify(result[1][0]));
         }
         return response;
-    } catch(ex){
+    } catch (ex) {
         throw ex;
     }
 }
@@ -208,7 +208,7 @@ async function consultarDeterminantes(postData) {
   let response = {};
   try {
     let sql = 'CALL SP_DETERMINANTES_READ(?)';
-    const id = Number(postData?.id) || 0;
+    const id = Number(postData.id) || 0;
     let result = await db.query(sql, [id]);
 
     response = JSON.parse(JSON.stringify(result[0][0]));
@@ -286,10 +286,87 @@ async function desactivarDeterminantes(postData) {
   }
 }
 
+async function actualizarTema(postData) {
+  let response = {};
+  try {
+    let sql = 'CALL SP_ACTUALIZAR_TEMA(?, ?)';
+    let result = await db.query(sql, [postData.idTema || 0, postData.tema || null]);
 
+    response = JSON.parse(JSON.stringify(result[0][0]));
+    if (response.status === 200) {
+      response.model = JSON.parse(JSON.stringify(result[1][0]));
+    }
+    return response;
+  } catch(ex) {
+    throw ex;
+  }
+}
 
+async function desactivarTema(postData) {
+  let response = {};
+  try {
+    let sql = 'CALL SP_ACTIVAR_DESACTIVAR_TEMA(?)';
+    let result = await db.query(sql, [postData.idTema || 0]);
 
+    response = JSON.parse(JSON.stringify(result[0][0]));
+    if (response.status == 200) {
+      response.model = JSON.parse(JSON.stringify(result[1][0]));
+    }
+    return response;
+  } catch(ex) {
+    throw ex;
+  }
+}
 
+async function desactivarTema(postData) {
+  let response = {};
+  try {
+    let sql = 'CALL SP_ACTIVAR_DESACTIVAR_TEMA(?)';
+    let result = await db.query(sql, [postData.idTema || 0]);
+
+    response = JSON.parse(JSON.stringify(result[0][0]));
+    if (response.status == 200) {
+      response.model = JSON.parse(JSON.stringify(result[1][0]));
+    }
+    return response;
+  } catch(ex) {
+    throw ex;
+  }
+}
+
+async function actualizarTipoDocumento(postData) {
+    let response = {};
+    try {
+        let sql = 'CALL SP_ACTUALIZAR_TIPO_DOCUMENTO(?, ?)';
+        let result = await db.query(sql, [postData.idTipoDocumento || 0, postData.tipoDocumento || null]);
+
+        response = JSON.parse(JSON.stringify(result[0][0]));
+
+        if (response.status === 200) {
+            response.model = JSON.parse(JSON.stringify(result[1][0]));
+        }
+        return response;
+    } catch (ex) {
+        throw ex;
+    }
+}
+
+async function activarDesactivarTipoDocumento(postData) {
+    let response = {};
+    try {
+        let sql = 'CALL SP_ACTIVAR_DESACTIVAR_TIPO_DOCUMENTO(?)';
+        let result = await db.query(sql, [postData.idTipoDocumento || 0]);
+
+        response = JSON.parse(JSON.stringify(result[0][0]));
+
+        if (response.status === 200) {
+            response.model = JSON.parse(JSON.stringify(result[1][0]));
+        }
+        return response;
+    } catch (ex) {
+        throw ex;
+    }
+}
 
 module.exports = {
   consultarTema,
@@ -299,13 +376,18 @@ module.exports = {
   consultarUnidadAdministrativa,
   consultarInstruccion,
   consultarDependencia,
-    consultarUsuarioRol,
+  consultarUsuarioRol,
   registrarTema, 
-  registrarPrioridad,
   insertarDeterminantes,
   consultarDeterminantes,
   actualizarDeterminantes,
   //
   desactivarDeterminantes,
+  actualizarTema,
+  desactivarTema,  
+  registrarTipoDocumento,
+  actualizarTipoDocumento,
+  activarDesactivarTipoDocumento,
+  
   consultarCantidadesStatus
 };

@@ -172,25 +172,6 @@ async function updateUser(req, res) {
     }
 }
 
-async function getUserlog(req, res) {
-    try {
-        const postData = req.body;
-        
-        // Obtener datos del token (disponibles después de validateToken)
-        console.log("idUsuarioModifica:", req.idUsuarioModifica);
-        console.log("idToken:", req.idToken);
-        
-        if (Object.keys(postData).length !== 0) {   
-            let data = await userDAO.getUserlog(postData);                                    
-            return res.status(200).json(data);
-        } else {
-            res.status(400).json(utils.invalidPostData(postData));
-        }
-    } catch (ex) {
-        res.status(500).json(utils.errorGenerico(ex));
-    }
-}
-
 /**
  * activa un usuario existente
  * 
@@ -210,6 +191,24 @@ async function activateUser(req, res) {
         res.status(500).json(utils.errorGenerico(ex));
     }
 }
+async function getUserlog(req, res) {
+    try {
+        const postData = req.body;
+        
+        // Obtener datos del token (disponibles después de validateToken)
+        console.log("idUsuarioModifica:", req.idUsuarioModifica);
+        console.log("idToken:", req.idToken);
+        
+        if (Object.keys(postData).length !== 0) {   
+            let data = await userDAO.getUserlog(postData);                                    
+            return res.status(200).json(data);
+        } else {
+            res.status(400).json(utils.invalidPostData(postData));
+        }
+    } catch (ex) {
+        res.status(500).json(utils.errorGenerico(ex));
+    }
+}
 module.exports = {
     createUser,
     confirmEmail,
@@ -221,6 +220,21 @@ module.exports = {
     activateUser,
     getUsuariosAdmin,
     getUserlog
+}
+
+function getClientIp(req) {
+    let ip = req.headers['x-forwarded-for'];
+    if (ip) {
+        // Puede ser una lista de IPs separadas por coma
+        ip = ip.split(',')[0].trim();
+    } else {
+        ip = req.socket.remoteAddress;
+    }
+    // Si es IPv6 localhost
+    if (ip === '::1') return '127.0.0.1';
+    // Si es IPv6-mapeado a IPv4
+    if (ip && ip.startsWith('::ffff:')) return ip.replace('::ffff:', '');
+    return ip;
 }
 
 function getClientIp(req) {

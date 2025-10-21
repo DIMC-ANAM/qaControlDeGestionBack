@@ -73,7 +73,7 @@ async function consultarUsuarioRol(req, res) {
 
 async function registrarTema(req, res) {
     try {        
-        let data = await catalogDAO.registrarTema(postData);
+        let data = await catalogDAO.registrarTema(req.body);
         return res.status(200).json(data);
     } catch (ex) {
         res.status(500).json(utils.errorGenerico(ex));
@@ -134,6 +134,54 @@ async function consultarCantidadesStatus(req, res) {
     }
 }
 
+async function actualizarTema(req, res) {
+    try{
+        let data = await catalogDAO.actualizarTema(req.body);
+        return res.status(200).json(data);
+    }catch (ex){
+        res.status(500).json(utils.errorGenerico(ex));
+    }
+}
+
+async function desactivarTema(req, res) {
+    try{
+        let data = await catalogDAO.desactivarTema(req.body);
+        return res.status(200).json(data);
+    }catch (ex){
+        res.status(500).json(utils.errorGenerico(ex));
+    }
+}
+
+async function registrarTipoDocumento(req, res) {
+    try{
+        let data = await catalogDAO.registrarTipoDocumento(req.body);
+        return res.status(200).json(data);
+    }catch (ex){
+        res.status(500).json(utils.errorGenerico(ex));
+    }
+}
+
+async function actualizarTipoDocumento(req, res) {
+    try{
+        let data = await catalogDAO.actualizarTipoDocumento(req.body);
+        return res.status(200).json(data);
+    }catch (ex){
+        res.status(500).json(utils.errorGenerico(ex));
+    }
+}
+
+async function activarDesactivarTipoDocumento(req, res) {
+    try{
+        let data = await catalogDAO.activarDesactivarTipoDocumento(req.body);
+        return res.status(200).json(data);
+    }catch (ex){
+        res.status(500).json(utils.errorGenerico(ex));
+    }
+}
+
+
+
+
 
 module.exports = {
     consultarTema,
@@ -145,11 +193,15 @@ module.exports = {
     consultarDependencia,
     consultarUsuarioRol,
     registrarTema,
-    registrarPrioridad,
     insertarDeterminantes,
     consultarDeterminantes,
     actualizarDeterminantes,
     desactivarDeterminantes,
-	consultarCantidadesStatus
+	consultarCantidadesStatus,
+    actualizarTema,
+    desactivarTema,
+    registrarTipoDocumento,
+    actualizarTipoDocumento,
+    activarDesactivarTipoDocumento,
 }
 
