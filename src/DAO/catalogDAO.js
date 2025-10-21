@@ -141,7 +141,7 @@ async function registrarTema(postData) {
     throw ex;
   }
 }
-    // Registrar proridad
+
 async function registrarTipoDocumento(postData) {
     let response = {};
     try {
@@ -163,7 +163,7 @@ async function registrarTipoDocumento(postData) {
 async function insertarDeterminantes(postData) {
   let response = {};
   try {
-    let sql = 'CALL SP_DETERMINANTES_INSERT(?,?,?,?,?,?)';
+    let sql = 'CALL SP_REGISTRAR_DETERMINANTE(?,?,?,?,?,?)';
     let result = await db.query(sql, [
       postData.nivel || null,
       postData.unidadDeNegocio || null,
@@ -189,7 +189,7 @@ async function insertarDeterminantes(postData) {
 async function consultarDeterminantes(postData) {
   let response = {};
   try {
-    let sql = 'CALL SP_DETERMINANTES_READ(?)';
+    let sql = 'CALL SP_OBTENER_DETERMINANTE(?)';
     const id = Number(postData.id) || 0;
     let result = await db.query(sql, [id]);
 
@@ -204,32 +204,11 @@ async function consultarDeterminantes(postData) {
     throw ex;
   }
 }
-
-
-  // async function consultarDeterminantes(postData){
-  //   let response = {};
-  //   try{
-  //     let sql = 'CALL SP_DETERMINANTES_READ(?)';
-  //     let result = await db.query(sql, [postData.id || 0]);
-      
-  //     response = JSON.parse(JSON.stringify(result[0][0]));
-  //     if (response.status == 200){
-  //       response.model = JSON.parse(JSON.stringify(result[1][1]));
-  //     }
-  //     return response;
-
-  //   } catch(ex){
-  //     throw ex;
-  //   }
-  // }
-
-
- // actualiza determinantes
  
 async function actualizarDeterminantes(postData) {
   let response = {};
   try {
-    let sql = 'CALL SP_DETERMINANTES_UPDATE(?,?,?,?,?,?,?)';
+    let sql = 'CALL SP_ACTUALIZAR_DETERMINANTE(?,?,?,?,?,?,?)';
     let result = await db.query(sql, [
       postData.id || 0,
       postData.nivel || null,
@@ -254,7 +233,7 @@ async function actualizarDeterminantes(postData) {
 async function desactivarDeterminantes(postData) {
   let response = {};
   try {
-    let sql = 'CALL SP_DETERMINANTES_DELETE(?)';
+    let sql = 'CALL SP_ACTIVAR_DESACTIVAR_DETERMINANTE(?)';
     let result = await db.query(sql, [postData.id || 0]);
 
     response = JSON.parse(JSON.stringify(result[0][0]));
@@ -300,21 +279,6 @@ async function desactivarTema(postData) {
   }
 }
 
-async function desactivarTema(postData) {
-  let response = {};
-  try {
-    let sql = 'CALL SP_ACTIVAR_DESACTIVAR_TEMA(?)';
-    let result = await db.query(sql, [postData.idTema || 0]);
-
-    response = JSON.parse(JSON.stringify(result[0][0]));
-    if (response.status == 200) {
-      response.model = JSON.parse(JSON.stringify(result[1][0]));
-    }
-    return response;
-  } catch(ex) {
-    throw ex;
-  }
-}
 
 async function actualizarTipoDocumento(postData) {
     let response = {};
