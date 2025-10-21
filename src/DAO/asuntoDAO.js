@@ -100,6 +100,20 @@ async function registrarAsunto(postData) {
 
                     response.anexosResponse = anexosResult;
                 }
+
+				/* aqui evaluamos si postData.autoturnar = 1 entonces llamamos a la funcion de turnar el asunto con el la lista de un elemento de turnado conforme los parametrois que pide 				 
+				turnar asunto esta aquí en este mismo archivo 
+				*/
+				/* if(postData.autoturnar == 1 ){
+					const turnado = {
+						idAsunto: idAsunto,
+						idUnidadResponsable: postData.id ,
+						idInstruccion: ,
+						idUsuarioAsigna: ,
+						idTurnadoPadre: null
+					}
+					postData.listaTurnados = [turnado]
+				} */
             }
         } else {
             response = { status: result[0]?.[0]?.status, message: result[0]?.[0]?.message };
@@ -353,12 +367,13 @@ async function reemplazarDocumento(postData) {
 async function eliminarDocumento(postData) {
     let response = {};
     try {
-        const sql = `CALL SP_ELIMINAR_DOCUMENTO_ASUNTO (?)`;
+        const sql = `CALL SP_ELIMINAR_DOCUMENTO_ASUNTO (?,?)`;
 
 
         // Llamar al procedimiento almacenado
         const resultDeleteBD = await db.query(sql, [
-            postData.idDocumentAsunto
+            postData.idDocumentAsunto,
+            postData.idUsuarioModifica
         ]);
         const resultInfo = resultDeleteBD?.[0]?.[0]; // Primer result set: status y message
         const resultRuta = resultDeleteBD?.[1]?.[0]; // Segundo result set: model
