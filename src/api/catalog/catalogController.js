@@ -1,5 +1,6 @@
 const catalogDAO = require("../../DAO/catalogDAO");
-const utils = require("../utils/utils")
+const utils = require("../utils/utils");
+const token = require("../token/tokenController");
 
 /**
  * Into controller files, you will add the logic and calls to DAO objects 
@@ -71,8 +72,8 @@ async function consultarUsuarioRol(req, res) {
 }
 
 async function registrarTema(req, res) {
-    try {
-        let data = await catalogDAO.registrarTema(req.body);
+    try {        
+        let data = await catalogDAO.registrarTema(postData);
         return res.status(200).json(data);
     } catch (ex) {
         res.status(500).json(utils.errorGenerico(ex));

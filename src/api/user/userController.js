@@ -171,9 +171,15 @@ async function updateUser(req, res) {
         res.status(500).json(utils.errorGenerico(ex));
     }
 }
+
 async function getUserlog(req, res) {
     try {
         const postData = req.body;
+        
+        // Obtener datos del token (disponibles después de validateToken)
+        console.log("idUsuarioModifica:", req.idUsuarioModifica);
+        console.log("idToken:", req.idToken);
+        
         if (Object.keys(postData).length !== 0) {   
             let data = await userDAO.getUserlog(postData);                                    
             return res.status(200).json(data);
