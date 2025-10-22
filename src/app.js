@@ -13,6 +13,7 @@ const express = require("express");
 const app = express();
 const fs = require("fs");
 const path = require('path');
+const responseInterceptor = require("./utils/responseInterceptor");
 
 /*app settings*/
 const config = require("./config/config");
@@ -59,6 +60,8 @@ app.use((req, res, next) => {
     }
     next();
 });
+
+app.use(responseInterceptor);
 
 /* API's directory to save all files 
 * (Those are private files)
