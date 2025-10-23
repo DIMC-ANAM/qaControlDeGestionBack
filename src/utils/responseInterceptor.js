@@ -37,11 +37,12 @@ function encryptData(data) {
 function responseInterceptor(req, res, next) {
     // Lista de rutas que NO deberían encriptarse
     const skipEncryption = [
+		'/usuario/'
         //'/token/generateToken',
         
     ];
 
-    if (skipEncryption.some(path => req.path.startsWith(path))) {
+    if (!skipEncryption.some(path => req.path.startsWith(path))) {
         return next();
     }
 
