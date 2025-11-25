@@ -31,5 +31,7 @@ router.post("/desactivarTema", token.validateToken, controller.desactivarTema);
 router.post("/registrarTipoDocumento", token.validateToken, controller.registrarTipoDocumento);
 router.post("/actualizarTipoDocumento", token.validateToken, controller.actualizarTipoDocumento);
 router.post("/activarTipoDocumento", token.validateToken, controller.activarDesactivarTipoDocumento);
+router.post("/verReporte", token.validateToken, controller.verReporte);
+router.post("/busquedaAvanzadaTurnados", token.validateToken, controller.busquedaAvanzadaTurnados);
 
 module.exports = router;

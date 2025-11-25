@@ -349,6 +349,90 @@ async function activarDesactivarTipoDocumento(postData) {
     }
 }
 
+async function verReporte(postData) {
+  let response = {};
+  try {
+    let sql = `CALL SP_VER_REPORTE(?, ?)`;
+    let result = await db.query(sql, [
+      postData.fechaInicio || null,
+      postData.fechaFin || null,
+    ]);
+
+    response = JSON.parse(JSON.stringify(result[0][0])); 
+    if (response.status === 200) {
+      response.model = {
+        totalAsuntos: result[1],
+        asuntosPorStatus: result[2],
+        tiempoPromedioAtencion: result[3],
+        asuntosConcluidos: result[4],
+        tiempoPorTema: result[5],
+        asuntosPorTema: result[6],
+        turnosPorUnidad: result[7],
+        listaAsuntosPorUnidad: result[8],
+        asuntosConUnidades: result[9],
+        asuntosPorUnidadRespTotalTurnados: result[10],
+        asuntosPorUnidadRespTotalUnidades: result[11],
+      };
+    }
+    return response;
+  } catch (ex) {
+    throw ex;
+  }
+}
+
+async function busquedaAvanzadaTurnados(postData) {
+  let response = {};
+  try {
+    let sql = `CALL SP_BUSQUEDA_AVANZADA_TURNADOS(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
+    let result = await db.query(sql, [
+      postData.fechaInicio || null,
+      postData.fechaFin || null,
+      postData.idUnidadResponsable || null,
+      postData.statusTurnado || null,
+      postData.idUsuarioTurna || null,
+      postData.idUsuarioContesta || null,
+      postData.idAsunto || null,
+      postData.folio || null,
+      postData.tipoOperacion || null,
+      postData.conRespuesta || null,
+      postData.soloRechazados || null,
+      postData.consecutivo || null,
+      postData.idInstruccion || null,
+      postData.idTema || null,
+      postData.statusAsunto || null,
+      postData.ordenamiento || 'fecha',
+      postData.direccion || 'DESC',
+      postData.limite || 100,
+      postData.offset || 0,
+    ]);
+
+    response = JSON.parse(JSON.stringify(result[0][0]));
+    if (response.status === 200) {
+      response.model = {
+        resumenGeneral: result[1][0],
+        distribucionPorStatus: result[2],
+        distribucionPorUnidad: result[3],
+        distribucionPorUsuarioTurna: result[4],
+        analisisHistorialOperaciones: result[5],
+        transicionesStatus: result[6],
+        detalleTurnados: result[7],
+        historialDetallado: result[8],
+        analisisRechazos: result[9],
+        timelinePorAsunto: result[10],
+        paginacion: result[11][0],
+        catalogoTemas: result[12],
+        catalogoUnidades: result[13],
+        catalogoInstrucciones: result[14],
+      };
+    }
+    return response;
+  } catch (ex) {
+    throw ex;
+  }
+}
+
+
+
 module.exports = {
   consultarTema,
   consultarPrioridad,
@@ -362,13 +446,13 @@ module.exports = {
   insertarDeterminantes,
   consultarDeterminantes,
   actualizarDeterminantes,
-  //
   desactivarDeterminantes,
   actualizarTema,
   desactivarTema,  
   registrarTipoDocumento,
   actualizarTipoDocumento,
   activarDesactivarTipoDocumento,
-  
+  verReporte,
+  busquedaAvanzadaTurnados,
   consultarCantidadesStatus
 };

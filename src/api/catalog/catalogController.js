@@ -179,6 +179,24 @@ async function activarDesactivarTipoDocumento(req, res) {
     }
 }
 
+async function verReporte(req, res) {
+    try{
+        let data = await catalogDAO.verReporte(req.body);
+        return res.status(200).json(data);
+    }catch (ex){
+        res.status(500).json(utils.errorGenerico(ex));
+    }
+}
+
+async function busquedaAvanzadaTurnados(req, res) {
+    try{
+        let data = await catalogDAO.busquedaAvanzadaTurnados(req.body);
+        return res.status(200).json(data);
+    }catch (ex){
+        res.status(500).json(utils.errorGenerico(ex));
+    }
+}
+
 
 
 
@@ -203,5 +221,7 @@ module.exports = {
     registrarTipoDocumento,
     actualizarTipoDocumento,
     activarDesactivarTipoDocumento,
+    verReporte,
+    busquedaAvanzadaTurnados
 }
 
