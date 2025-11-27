@@ -387,42 +387,29 @@ async function busquedaAvanzadaTurnados(postData) {
     let result = await db.query(sql, [
       postData.fechaInicio || null,
       postData.fechaFin || null,
-      postData.idUnidadResponsable || null,
-      postData.statusTurnado || null,
-      postData.idUsuarioTurna || null,
-      postData.idUsuarioContesta || null,
+      postData.idUnidadResponsable || null, 
+      postData.statusTurnado || null,       
+      postData.idUsuarioTurna || null,      
+      postData.idUsuarioContesta || null,   
       postData.idAsunto || null,
       postData.folio || null,
       postData.tipoOperacion || null,
-      postData.conRespuesta || null,
-      postData.soloRechazados || null,
+      postData.conRespuesta ?? null,
+      postData.soloRechazados ?? null,
       postData.consecutivo || null,
       postData.idInstruccion || null,
       postData.idTema || null,
       postData.statusAsunto || null,
       postData.ordenamiento || 'fecha',
       postData.direccion || 'DESC',
-      postData.limite || 100,
-      postData.offset || 0,
+      postData.limite || 100, 
+      postData.offset || 0,   
     ]);
-
     response = JSON.parse(JSON.stringify(result[0][0]));
     if (response.status === 200) {
       response.model = {
-        resumenGeneral: result[1][0],
-        distribucionPorStatus: result[2],
-        distribucionPorUnidad: result[3],
-        distribucionPorUsuarioTurna: result[4],
-        analisisHistorialOperaciones: result[5],
-        transicionesStatus: result[6],
-        detalleTurnados: result[7],
-        historialDetallado: result[8],
-        analisisRechazos: result[9],
-        timelinePorAsunto: result[10],
-        paginacion: result[11][0],
-        catalogoTemas: result[12],
-        catalogoUnidades: result[13],
-        catalogoInstrucciones: result[14],
+        distribucionPorStatus: result[1],
+        detalleTurnados: result[2],
       };
     }
     return response;
