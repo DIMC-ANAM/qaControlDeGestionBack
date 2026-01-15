@@ -18,6 +18,16 @@ async function consultarTurnados(req, res) {
     }
 }
 
+async function asignarComisionado(req, res) {
+    try {
+        const postData = req.body;
+            let data = await turnadoDAO.asignarComisionado(postData);
+            return res.status(200).json(data);
+    } catch (ex) {
+        res.status(500).json(utils.errorGenerico(ex));
+    }
+}
+
 async function contestarTurnado(req, res) {
     try {
         const postData = req.body;
@@ -68,11 +78,34 @@ async function verTurnado(req, res) {
     }
 }
 
+async function obtenerComisionados(req, res) {
+    try {
+        const postData = req.body;
+            let data = await turnadoDAO.obtenerComisionados(postData);
+            return res.status(200).json(data);
+    } catch (ex) {
+        res.status(500).json(utils.errorGenerico(ex));
+    }
+}
+
+async function consultarAsuntoComisionado(req, res) {
+    try {
+        const postData = req.body;
+            let data = await turnadoDAO.consultarAsuntoComisionado(postData);
+            return res.status(200).json(data);
+    } catch (ex) {
+        res.status(500).json(utils.errorGenerico(ex));
+    }
+}
+
 
 module.exports = {
     consultarTurnados,
     contestarTurnado,
     rechazarTurnado,
     consultarDetalleTurnado,
-    verTurnado
+    verTurnado,
+    asignarComisionado,
+    obtenerComisionados,
+    consultarAsuntoComisionado
 }

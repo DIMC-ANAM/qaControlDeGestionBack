@@ -107,8 +107,8 @@ app.get('/', function (req, res) {
  */
 
 if (config.NODE_ENV == config.ENUM_NODE_ENV.Development) {
-    app.listen(app.get("port"), () => {
-        console.log("Starting HTTP server on: ", app.get("port"));
+    app.listen(app.get("port"), config.HOST, () => {
+        console.log("Starting HTTP server on: ", config.HOST + ":" + app.get("port"));
     });
 }
 

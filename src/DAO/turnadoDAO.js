@@ -9,10 +9,14 @@ async function consultarTurnadosUR(postData) {
     try {
 
         let sql = `CALL SP_CONSULTAR_TURNADOS_UR (
-            ?
+            ?, ?, ?
         )`;
 
-        let result = await db.query(sql, [postData.idUnidadAdministrativa || 0]);
+        let result = await db.query(sql, [
+            postData.idUnidadAdministrativa || 0,
+            postData.idUsuario || 0,
+            postData.idUsuarioRol || 0
+        ]);
         response = JSON.parse(JSON.stringify(result[0][0]));
 
         if (response.status == 200) {
@@ -146,7 +150,72 @@ async function contestarTurnado(postData) {
 }
 
 
+async function asignarComisionado(postData) {
+    let response = {};
+    try {
+
+        let sql = `CALL SP_ASIGNAR_COMISIONADO (
+            ?,?,?
+        )`;
+
+        let result = await db.query(sql, [
+            postData.idTurnado,
+            postData.idUsuarioResponsable,
+            postData.idUsuarioComisionado
+        ]);
+        response = JSON.parse(JSON.stringify(result[0][0]));
+
+        return response;
+    } catch (ex) {
+        throw ex;
+    }
+}
+
+async function obtenerComisionados(postData) {
+    let response = {};
+    try {
+        let sql = `CALL SP_OBTENER_COMISIONADOS (
+            ?
+        )`;
+        let result = await db.query(sql, [
+            postData.idUsuarioResponsable || postData.idUsuario
+        ]);
+        
+        response = {
+            status: 200,
+            message: 'OK',
+            model: JSON.parse(JSON.stringify(result[0]))
+        };
+        return response;
+    } catch (ex) {
+        throw ex;
+    }
+}
+
+async function consultarAsuntoComisionado(postData) {
+    let response = {};
+    try {
+        let sql = `CALL SP_CONSULTAR_ASUNTO_COMISIONADO (
+            ?
+        )`;
+        let result = await db.query(sql, [
+            postData.idTurnado
+        ]); 
+        response = JSON.parse(JSON.stringify(result[0][0]));
+        if (response.status == 200) {
+            response.model = JSON.parse(JSON.stringify(result[1]));
+        }
+
+        return response;
+    } catch (ex) {
+        throw ex;
+    }
+}
+
 module.exports = {
+    consultarAsuntoComisionado,
+    obtenerComisionados,
+    asignarComisionado,
     consultarTurnadosUR,
     rechazarTurnado,
     contestarTurnado,

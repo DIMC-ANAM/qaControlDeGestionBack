@@ -9,6 +9,9 @@ router.post("/contestarTurnado", token.validateToken, controller.contestarTurnad
 router.post("/rechazarTurnado", token.validateToken, controller.rechazarTurnado);
 router.post("/consultarDetalleTurnado", token.validateToken, controller.consultarDetalleTurnado);
 router.post("/verTurnado", token.validateToken, controller.verTurnado);
+router.post("/asignarComisionado", token.validateToken, controller.asignarComisionado);
+router.post("/obtenerComisionados", token.validateToken, controller.obtenerComisionados);
+router.post("/consultarAsuntoComisionado", token.validateToken, controller.consultarAsuntoComisionado);
 
 
 module.exports = router;

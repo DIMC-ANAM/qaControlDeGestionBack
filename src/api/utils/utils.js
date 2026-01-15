@@ -340,13 +340,16 @@ function generarZip(data, response) {
     var zip = Archiver('zip', { zlib: { level: 9 } });
 
     zip.on('error', function(err) {
+        console.error('Error generando zip:', err);
         response.status(500).end();
     });
 
     zip.pipe(response);
 
     let path_ = path.resolve(data.path);
-    zip.directory(path_, false);
+
+    zip.directory(path_, path.basename(path_));    
+    
     zip.finalize();
 }
 

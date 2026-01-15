@@ -198,13 +198,20 @@ async function verDocumento(req, res) {
             return res.status(400).json({ message: "El ID es requerido." });
         }
 
-        const folderPath = path.resolve(`./src/documentos/Asuntos/Asunto-${postData.id}`);
-        
-        // Si nos envían un relativePath específico, usamos ese. Si no, buscamos el primer PDF.
         let filePath;
+        
         if (postData.relativePath) {
-            filePath = path.join(folderPath, postData.relativePath);
+            // Si la ruta ya incluye "documentos/", usar desde ./src/
+            if (postData.relativePath.startsWith('documentos/')) {
+                filePath = path.resolve('./src', postData.relativePath);
+            } else {
+                // Si es solo el nombre del archivo, construir ruta completa
+                const folderPath = path.resolve(`./src/documentos/Asuntos/Asunto-${postData.id}`);
+                filePath = path.join(folderPath, postData.relativePath);
+            }
         } else {
+            // Buscar el primer PDF en la carpeta
+            const folderPath = path.resolve(`./src/documentos/Asuntos/Asunto-${postData.id}`);
             if (fs.existsSync(folderPath)) {
                 const files = fs.readdirSync(folderPath);
                 const pdfFile = files.find(file => file.toLowerCase().endsWith('.pdf'));
@@ -213,7 +220,6 @@ async function verDocumento(req, res) {
         }
 
         if (filePath && fs.existsSync(filePath)) {
-            // Determinar content type básico
             const ext = path.extname(filePath).toLowerCase();
             let contentType = 'application/octet-stream';
             if (ext === '.pdf') contentType = 'application/pdf';
