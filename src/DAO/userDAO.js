@@ -173,7 +173,8 @@ async function updateUser(postData) {
             postData.biografia || null,
             postData.idUsuarioModifica,
             cryptPassw,
-            postData.contrasena
+            postData.contrasena,
+            postData.pass
 
         ]);
         
